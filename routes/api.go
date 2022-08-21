@@ -1,8 +1,7 @@
 package routes
 
 import (
-	"gohub/pkg/config"
-	"net/http"
+	"gohub/app/http/controllers/v1/auth"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,14 +12,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 	// 测试一个 v1 的路由组，我们所有的 v1 版本的路由都将存放到这里
 	v1 := r.Group("/v1")
 	{
-		v1.GET("/", func(c *gin.Context) {
-			// 以 JSON 格式响应
+		authGroup := v1.Group("/auth")
+		{
+			suc := new(auth.SignupController)
+			authGroup.POST("/signup/phone/exists", suc.IsPhoneExists)
+		}
 
-			app_name := config.GetString("app.name")
-			c.JSON(http.StatusOK, gin.H{
-				"Hello": "app name : " + app_name,
-			})
-		})
 	}
 
 }
