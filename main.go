@@ -23,8 +23,10 @@ func main() {
 	flag.Parse()
 	config.InitConfig(env)
 
-	router := gin.New()
+	// 初始化 DB
+	bootstrap.SetupDB()
 
+	router := gin.New()
 	// 路由绑定 1.中间件 2.注册路由
 	bootstrap.SetupRoute(router)
 	err := router.Run(":3000")
