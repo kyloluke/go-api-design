@@ -3,9 +3,9 @@ package bootstrap
 import (
 	"errors"
 	"fmt"
+	"gohub/app/models/user"
 	"gohub/pkg/config"
 	"gohub/pkg/database"
-	"gohub/app/models/user"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -33,7 +33,7 @@ func SetupDB() {
 		})
 	case "sqlite":
 		// 初始化 sqlite
-		// 报错：cgo: C compiler "gcc" not found: exec: "gcc": executable file not found in %PATH%
+		// windows报错：cgo: C compiler "gcc" not found: exec: "gcc": executable file not found in %PATH%
 		// todo 暂时注释掉
 		// database := config.Get("database.sqlite.database")
 		// dbConfig = sqlite.Open(database)
