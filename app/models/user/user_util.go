@@ -10,7 +10,7 @@ func IsEmailExist(email string) bool {
 }
 
 // IsPhoneExist 判断手机号已被注册
-func IsPhoneExists(phone string) bool {
+func IsPhoneExist(phone string) bool {
 	var count int64
 	database.DB.Model(User{}).Where("phone = ?", phone).Count(&count)
 	return count > 0

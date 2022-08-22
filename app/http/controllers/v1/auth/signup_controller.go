@@ -14,8 +14,8 @@ type SignupController struct {
 	v1.BaseApiController
 }
 
-// IsPhoneExists 检测手机号是否被注册
-func (sc *SignupController) IsPhoneExists(c *gin.Context) {
+// IsPhoneExist 检测手机号是否被注册
+func (sc *SignupController) IsPhoneExist(c *gin.Context) {
 
 	// 初始化请求对象
 	request := requests.SignupPhoneExistRequest{}
@@ -31,7 +31,7 @@ func (sc *SignupController) IsPhoneExists(c *gin.Context) {
 	}
 
 	// 表单验证
-	errs := requests.ValidatePhoneIsExists(&request, c)
+	errs := requests.ValidatePhoneIsExist(&request)
 	if len(errs) > 0 {
 		// 验证失败，返回 422 状态码和错误信息
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
@@ -40,6 +40,33 @@ func (sc *SignupController) IsPhoneExists(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"exists": user.IsPhoneExists(request.Phone),
+		"exists": user.IsPhoneExist(request.Phone),
 	})
+}
+
+func (sc *SignupController) IsEmailExist(c *gin.Context) {
+
+	request := requests.SignupEmailExistRequest{}
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
+			"errors": err.Error(),
+		})
+		fmt.Println(err.Error())
+		return
+	}
+
+	// 数据验证
+	errs := requests.ValidateIsEmailExist(&request)
+	if len(errs) > 0 {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
+			"errors": errs,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"exist": user.IsEmailExist(request.Email),
+	})
+
 }
