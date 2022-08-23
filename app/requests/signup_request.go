@@ -26,16 +26,7 @@ func ValidatePhoneIsExist(data interface{}) map[string][]string {
 		},
 	}
 
-	// 配置初始化
-	opts := govalidator.Options{
-		Data:          data,
-		Rules:         rules,
-		TagIdentifier: "valid",
-		Messages:      messages,
-	}
-
-	// 开始验证
-	return govalidator.New(opts).ValidateStruct()
+	return validate(data, rules, messages)
 }
 
 // ValidateIsEmailExist 验证邮箱输入是否正确
@@ -53,12 +44,5 @@ func ValidateIsEmailExist(data interface{}) map[string][]string {
 		},
 	}
 
-	opts := govalidator.Options{
-		Data:          data, // todo 为什么直接从这里传指针是不行的？？？
-		Rules:         rules,
-		Messages:      messages,
-		TagIdentifier: "valid",
-	}
-
-	return govalidator.New(opts).ValidateStruct()
+	return validate(data, rules, messages)
 }

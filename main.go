@@ -23,6 +23,8 @@ func main() {
 	flag.Parse()
 	config.InitConfig(env)
 
+	// 初始化Logger
+	bootstrap.SetupLogger()
 	// 初始化 DB
 	bootstrap.SetupDB()
 
