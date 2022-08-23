@@ -25,6 +25,8 @@ func main() {
 
 	// 初始化Logger
 	bootstrap.SetupLogger()
+
+	gin.SetMode(gin.ReleaseMode)
 	// 初始化 DB
 	bootstrap.SetupDB()
 

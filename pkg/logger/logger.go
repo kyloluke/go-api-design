@@ -25,7 +25,6 @@ func InitLogger(filename string, maxSize, maxBackup, maxAge int, compress bool, 
 
 	// 设置日志等级，具体请见 config/log.go 文件
 	logLevel := new(zapcore.Level)
-	fmt.Println(logLevel)
 	if err := logLevel.UnmarshalText([]byte(level)); err != nil {
 		fmt.Println("日志初始化错误，日志级别设置有误。请修改 config/log.go 文件中的 log.level 配置项")
 	}
