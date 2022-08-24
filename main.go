@@ -32,6 +32,9 @@ func main() {
 	// 初始化 Redis
 	bootstrap.SetupRedis()
 
+	//logger.Dump(captcha.NewCaptcha().VerifyCaptcha("yvU6Kvgb62sRyNUYVegh", "142974"), "正确的答案")
+	//logger.Dump(captcha.NewCaptcha().VerifyCaptcha("yvU6Kvgb62sRyNUYVegh", "000000"), "错误的答案")
+
 	router := gin.New()
 	// 路由绑定 1.中间件 2.注册路由
 	bootstrap.SetupRoute(router)
