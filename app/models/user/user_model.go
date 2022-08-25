@@ -1,6 +1,9 @@
 package user
 
-import models "gohub/app/models"
+import (
+	models "gohub/app/models"
+	"gohub/pkg/database"
+)
 
 type User struct {
 	models.BaseModel
@@ -12,4 +15,8 @@ type User struct {
 	Password string `json:"-"`
 
 	models.CommonTimestampsField
+}
+
+func (userModel *User) Create() {
+	database.DB.Create(userModel)
 }
