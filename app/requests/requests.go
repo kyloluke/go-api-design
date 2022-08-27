@@ -8,7 +8,7 @@ import (
 )
 
 // ValidatorFunc 用于控制器的回调函数用
-//ValidatePhoneIsExist() ValidateEmailIsExist() 等函数名称
+// ValidatePhoneIsExist() ValidateEmailIsExist() 等函数名称
 
 type ValidatorFunc func(interface{}) map[string][]string
 

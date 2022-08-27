@@ -3,6 +3,7 @@ package user
 import (
 	models "gohub/app/models"
 	"gohub/pkg/database"
+	"gohub/pkg/hash"
 )
 
 type User struct {
@@ -19,4 +20,9 @@ type User struct {
 
 func (userModel *User) Create() {
 	database.DB.Create(userModel)
+}
+
+// ComparePassword 密码是否正确
+func (userModel *User) ComparePassword(password string) bool {
+	return hash.BcryptCheck(password, userModel.Password)
 }
