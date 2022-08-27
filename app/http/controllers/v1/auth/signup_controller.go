@@ -1,10 +1,12 @@
 package auth
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	v1 "gohub/app/http/controllers/v1"
 	"gohub/app/models/user"
 	"gohub/app/requests"
+	"gohub/pkg/jwt"
 	"gohub/pkg/response"
 )
 
@@ -39,6 +41,7 @@ func (sc *SignupController) IsEmailExist(c *gin.Context) {
 	})
 }
 
+// SignupUsingEmail 邮箱登录
 func (sc *SignupController) SignupUsingEmail(c *gin.Context) {
 	request := requests.SignupUsingEmailRequest{}
 
@@ -55,8 +58,11 @@ func (sc *SignupController) SignupUsingEmail(c *gin.Context) {
 	userModel.Create()
 
 	if userModel.ID > 0 {
+		token := jwt.NewJWT().IssueToken(userModel.GetStringID(), userModel.Name)
+		fmt.Println(token)
 		response.CreatedJSON(c, gin.H{
-			"data": userModel,
+			"token": token,
+			"data":  userModel,
 		})
 	} else {
 		response.Abort500(c, "创建用户失败，请稍后再试")
