@@ -17,5 +17,6 @@ type CommonTimestampsField struct {
 }
 
 func (a *BaseModel) GetStringID() string {
+	//return strconv.FormatUint(a.ID, 10)   // 使用这个也是可以的
 	return cast.ToString(a.ID)
 }
