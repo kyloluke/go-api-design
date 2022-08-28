@@ -36,6 +36,11 @@ func main() {
 	//logger.Dump(captcha.NewCaptcha().VerifyCaptcha("yvU6Kvgb62sRyNUYVegh", "000000"), "错误的答案")
 
 	router := gin.New()
+
+	//router.GET("/test_auth", middlewares.AuthJWT(), func(c *gin.Context) {
+	//	userModel := auth.CurrentUser(c)
+	//	response.Data(c, userModel)
+	//})
 	// 路由绑定 1.中间件 2.注册路由
 	bootstrap.SetupRoute(router)
 	err := router.Run(":3000")
