@@ -32,3 +32,13 @@ func Get(idStr string) (userModel User) {
 	database.DB.Where("id = ?", idStr).First(&userModel)
 	return
 }
+
+func (userModel *User) Save() (rowsAffected int64) {
+	result := database.DB.Save(userModel)
+	return result.RowsAffected
+}
+
+func GetByEmail(email string) (userModel User) {
+	database.DB.Where("email = ?", email).First(&userModel)
+	return
+}

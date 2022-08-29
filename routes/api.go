@@ -18,17 +18,21 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			suc := new(auth.SignupController)
 			authGroup.POST("/signup/phone/exist", suc.IsPhoneExist)
 			authGroup.POST("/signup/email/exist", suc.IsEmailExist)
-			authGroup.POST("/signup/using-email", suc.SignupUsingEmail)
+			authGroup.POST("/signup/using-email", suc.SignupUsingEmail) // 通过邮箱验证码注册
 
 			// 发送验证码 图片验证码，需要加限流
 			vcc := new(auth.VerifyCodeController)
-			authGroup.POST("/verify-codes/captcha", vcc.ShowCaptcha)
-			authGroup.POST("/verify-codes/email", vcc.SendUsingEmail)
+			authGroup.POST("/verify-codes/captcha", vcc.ShowCaptcha)  // 显示图片验证码
+			authGroup.POST("/verify-codes/email", vcc.SendUsingEmail) // 携带正确的图片验证码和输入的邮箱，给邮箱发送验证码
 
 			// 登录
 			lgc := new(auth.LoginController)
 			authGroup.POST("/login/using-password", lgc.LoginByPassword)
 			authGroup.POST("/login/refresh-token", lgc.RefreshToken)
+
+			// 重置密码
+			prc := new(auth.PasswordResetController)
+			authGroup.POST("/password-reset/using-email", prc.ResetByEmail)
 		}
 
 	}
