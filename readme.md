@@ -1,10 +1,6 @@
-## 用法
-
-- `context`
-  - `pkg/redis`包中使用这个包
-  - 用法
-    - context.Context
-    - context.Background()
+## 用的第三方包
+- github.com/iancoleman/strcase  是用来处理大小写
+- github.com/gertd/go-pluralize  用来处理英文单复数
 
 ## string()
   - string和数字之间转换可使用标准库strconv
