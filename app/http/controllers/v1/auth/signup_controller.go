@@ -11,7 +11,7 @@ import (
 )
 
 type SignupController struct {
-	v1.BaseApiController
+	v1.BaseAPIController
 }
 
 // IsPhoneExist 检测手机号是否被注册

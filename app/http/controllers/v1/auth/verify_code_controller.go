@@ -11,7 +11,7 @@ import (
 )
 
 type VerifyCodeController struct {
-	v1.BaseApiController
+	v1.BaseAPIController
 }
 
 // ShowCaptcha 显示图片验证码
