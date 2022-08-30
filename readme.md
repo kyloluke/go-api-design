@@ -1,6 +1,17 @@
 ## 用的第三方包
 - github.com/iancoleman/strcase  是用来处理大小写
 - github.com/gertd/go-pluralize  用来处理英文单复数
+- embed
+  - `var stubsFS embed.FS`
+  - `stubsFS.ReadFile("stubs/" + stubName + ".stub")`
+- os
+  - `os.WriteFile(to, data, 0644)`
+  - `os.Stdout`
+  - `os.Args[1:]`
+  - `os.SyscallError`
+  - `os.IsNotExist(err)`
+  - `os.Stat()`
+  - `os.Exit(1)`
 
 ## string()
   - string和数字之间转换可使用标准库strconv
