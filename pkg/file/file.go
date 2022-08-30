@@ -1,7 +1,6 @@
 package file
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -16,10 +15,8 @@ func Put(data []byte, to string) error {
 
 // Exists 判断文件是否存在
 func Exists(filePath string) bool {
-	_, err := os.Stat(filePath)
-	fmt.Printf("os.Stat 返回：%#v/n", err)
-	fmt.Printf("os.IsNotExist 返回：%#v/n", os.IsNotExist(err))
-	if os.IsNotExist(err) {
+	_, err := os.Stat(filePath) // 文件不存在时 err = &fs.PathError{Op:"CreateFile", Path:"app/cmd/test_command.go", Err:0x2}
+	if os.IsNotExist(err) {     // 文件不存在时， true
 		return false
 	}
 	return true

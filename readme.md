@@ -12,6 +12,7 @@
   - `os.IsNotExist(err)`
   - `os.Stat()`
   - `os.Exit(1)`
+  - `os.MkdirAll(dir, os.ModePerm)` 会确保父目录和子目录都会创建，第二个参数是目录权限，使用 0777 如果目录存在，则不做处理
 
 ## string()
   - string和数字之间转换可使用标准库strconv

@@ -1,7 +1,7 @@
 package user
 
 import (
-	models "gohub/app/models"
+	"gohub/app/models"
 	"gohub/pkg/database"
 	"gohub/pkg/hash"
 )
