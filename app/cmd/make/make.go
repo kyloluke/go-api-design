@@ -5,8 +5,8 @@ import (
 	"embed"
 	"fmt"
 	"gohub/pkg/console"
-	"gohub/pkg/file"
 	"gohub/pkg/str"
+	"os"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -69,6 +69,7 @@ func init() {
 		CmdMakeCMD,
 		CmdMakeModel,
 		CmdMakeAPIController,
+		CmdMakeRequest,
 	)
 }
 
@@ -88,25 +89,32 @@ func makeModelFromString(name string) Model {
 // 最后一个选项可选，如若传参，应传 map[string]string 类型，作为附加的变量搜索替换
 func createFileFromStub(filePath string, stubName string, model Model, variables ...interface{}) {
 
-	// 实现最后一个参数可选
+	// 1 实现最后一个参数可选
 	replaces := make(map[string]string)
 	if len(variables) > 0 {
 		replaces = variables[0].(map[string]string)
 	}
 
-	// 目标文件已存在
-	if file.Exists(filePath) {
+	// 2 目标文件已存在
+	//if file.Exists(filePath) {
+	//	console.Exit(filePath + " already exists!")
+	//}
+
+	// 2 判断目标文件是否已存在
+	_, err := os.Stat(filePath) // 文件不存在时 err = &fs.PathError{Op:"CreateFile", Path:"app/cmd/test_command.go", Err:0x2}
+	if !os.IsNotExist(err) {    // 文件不存在时为 true, 存在时为 false
 		console.Exit(filePath + " already exists!")
 	}
 
-	// 读取 stub 模板文件
-	modelData, err := stubsFS.ReadFile("stubs/" + stubName + ".stub")
+	// 3 读取 stub 模板文件
+	var modelData []byte
+	modelData, err = stubsFS.ReadFile("stubs/" + stubName + ".stub")
 	if err != nil {
 		console.Exit(err.Error())
 	}
 	modelStub := string(modelData)
 
-	// 添加默认的替换变量
+	// 4 添加默认的替换变量
 	replaces["{{VariableName}}"] = model.VariableName
 	replaces["{{VariableNamePlural}}"] = model.VariableNamePlural
 	replaces["{{StructName}}"] = model.StructName
@@ -114,13 +122,14 @@ func createFileFromStub(filePath string, stubName string, model Model, variables
 	replaces["{{PackageName}}"] = model.PackageName
 	replaces["{{TableName}}"] = model.TableName
 
-	// 对模板内容做变量替换
+	// 5 对模板内容做变量替换
 	for search, replace := range replaces {
 		modelStub = strings.ReplaceAll(modelStub, search, replace)
 	}
 
-	// 存储到目标文件中
-	err = file.Put([]byte(modelStub), filePath)
+	// 6 存储到目标文件中
+	//err = file.Put([]byte(modelStub), filePath)  // 可以直接调用此函数
+	err = os.WriteFile(filePath, []byte(modelStub), 0644)
 	if err != nil {
 		console.Exit(err.Error())
 	}
