@@ -1,8 +1,12 @@
 package migrate
 
 import (
+	"gohub/pkg/console"
 	"gohub/pkg/database"
 	"gorm.io/gorm"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 // Migrator 数据迁移操作类
@@ -13,7 +17,6 @@ type Migrator struct {
 }
 
 // Migration 对应数据的 migrations 表里的一条数据
-// 我们每个迁移都会给 migrations 表冲填充一个迁移记录
 type Migration struct {
 	ID        int64  `gorm:"primaryKey;autoIncrement;"`
 	Migration string `gorm:"varchar(255);not null;unique;"`
@@ -31,12 +34,93 @@ func NewMigrator() *Migrator {
 	}
 
 	// 创建 migrations 表，如果存在则无操作
+	//migrator.createMigrationsTable()
 	migration := Migration{}
 	if !migrator.Migrator.HasTable(&migration) {
 		migrator.Migrator.CreateTable(&migration)
 	}
 
 	return migrator
+}
+
+// Up 执行所有未迁移的文件
+func (migrator *Migrator) Up() {
+	// 读取所有的有效的，格式正确的迁移文件，并确保时间顺序
+	migrateFiles := migrator.readAllMigrationFiles()
+
+	// 获取当前批次的值
+	batch := migrator.getBatch()
+
+	// 获取所有的成功迁移的数据
+	migrations := []Migration{}
+	migrator.DB.Find(&migrations)
+
+	// 可以通过此值来判断数据库是否已是最新
+	runed := false
+	// 对迁移文件进行遍历，如果没有执行过，就执行 up 回调
+	for _, mfile := range migrateFiles {
+
+		// 对比文件名称，看是否已经运行过
+		if mfile.isNotMigrated(migrations) {
+			migrator.runUpMigration(mfile, batch)
+			runed = true
+		}
+	}
+
+	if !runed {
+		console.Success("database is up to date.")
+	}
+}
+
+// 执行迁移，执行迁移的 up 方法
+func (migrator *Migrator) runUpMigration(mfile MigrationFile, batch int) {
+	if mfile.Up != nil {
+		// 友好提示
+		console.Warning("migrating " + mfile.FileName)
+		// 执行 up 方法
+		mfile.Up(database.DB.Migrator(), database.SQLDB)
+		// 提示已迁移了哪个文件
+		console.Success("migrated " + mfile.FileName)
+	}
+}
+
+// getBatch 获取当前这个批次的值, 从 migrations 表中获取最后那条记录的 batch 字段的值
+func (migrator *Migrator) getBatch() int {
+	// 默认为 1
+	batch := 1
+
+	lastMigration := Migration{}
+	migrator.DB.Order("id DESC").First(&lastMigration)
+
+	// 如果有值就 +1
+	if lastMigration.ID > 0 {
+		batch = lastMigration.Batch + 1
+	}
+
+	return batch
+}
+
+// 从文件目录读取文件，保证正确的时间排序
+func (migrator *Migrator) readAllMigrationFiles() []MigrationFile {
+	// 读取 database/migration 目录下的所有文件，默认是文件名称排序
+	files, err := os.ReadDir(migrator.Folder)
+	console.ExitIf(err)
+
+	var migrateFiles []MigrationFile
+	for _, f := range files {
+		// 除掉末尾的 .go
+		fileName := strings.TrimSuffix(f.Name(), filepath.Ext(f.Name()))
+
+		// 通过迁移文件的名称获取『MigrationFile』对象，
+		mfile := getMigrationFile(fileName) // mfile 是 migration_file.go 中的 MigrationFile 结构体对象
+		// 加个判断，确保迁移文件可用，再放进 migrateFiles 数组中
+		if len(mfile.FileName) > 0 {
+			migrateFiles = append(migrateFiles, mfile)
+		}
+	}
+
+	// 返回排序好的『MigrationFile』数组
+	return migrateFiles
 }
 
 //func (migrator *Migrator) createMigrationsTable() {

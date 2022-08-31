@@ -2,10 +2,13 @@
 - github.com/iancoleman/strcase  是用来处理大小写
 - github.com/gertd/go-pluralize  用来处理英文单复数
 - embed
-  - `var stubsFS embed.FS`
-  - `stubsFS.ReadFile("stubs/" + stubName + ".stub")`
+  - `embed.FS.ReadFile("stubs/" + stubName + ".stub")` 读文件, 
 - os
-  - `os.WriteFile(to, data, 0644)`
+  - 读取文件内容时，结果为[]byte，需要 string()去转成string
+  - 写入文件内容时，格式为[]byte，需要[]byte(string_data) 转换
+  - `os.WriteFile(to, []byte, 0644)` 将内容写进文件
+  - `os.ReadDir(migrator.Folder)`读取指定目录中的所有的文件，返回切片数组和err
+  - `os.ReadFile()` 读文件，返回[]byte 和 err
   - `os.Stdout`
   - `os.Args[1:]`
   - `os.SyscallError`
@@ -52,6 +55,11 @@
   formatTime, _ := time.Parse("2006-01-02 15:04:05", formatTimeStr) // 转到 time.Now()
 ```
 ## migration command
+### 思路
+  - 1.如果第一次迁移，创建 migrations表
+  - 2.从database/migrations 目录中获取所有的 有效的迁移文件
+  - 3.从migrations表中获取所有的已经迁移的数据，每个迁移表一条数据
+  - 4.如果2中有某条或者多条没有在3中出现，则将这些执行迁移操作，migrations的batch字段自增1
 1. pkg/migrate/migration_file.go
   - 此文件对象对应单个的迁移文件
   - 单个的迁移文件需要具备三个属性

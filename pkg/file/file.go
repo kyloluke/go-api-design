@@ -2,6 +2,8 @@ package file
 
 import (
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 // Put 将数据写入文件，会自动创建该文件
@@ -20,4 +22,8 @@ func Exists(filePath string) bool {
 		return false
 	}
 	return true
+}
+
+func FileNameWithoutExtension(fileName string) string {
+	return strings.TrimSuffix(fileName, filepath.Ext(fileName))
 }
