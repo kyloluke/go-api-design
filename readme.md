@@ -51,5 +51,16 @@
   formatTimeStr := "2017-04-11 13:33:37"
   formatTime, _ := time.Parse("2006-01-02 15:04:05", formatTimeStr) // 转到 time.Now()
 ```
-
-
+## migration command
+1. pkg/migrate/migration_file.go
+  - 此文件对象对应单个的迁移文件
+  - 单个的迁移文件需要具备三个属性
+    - up
+    - down
+    - 文件名
+  - 此文件中的`migrationFiles`是个切片数组，存放的是所有的迁移文件，每次添加新的迁移文件（通过命令添加），都会调用此文件中的`add`方法，append到此切片数组中
+  
+2. pkg/migrate/migrator.go
+  - 此文件对象是最终的操作对象
+  - 负责创建migration数据表
+  - 拥有 up down reset fresh等动作
