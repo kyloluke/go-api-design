@@ -167,3 +167,21 @@ func (migrator *Migrator) createMigrationsTable() {
 		migrator.Migrator.CreateTable(&migration)
 	}
 }
+
+// Reset 回滚所有迁移
+func (migrator *Migrator) Reset() {
+
+	var migrations = []Migration{}
+	// 按照倒序读取所有迁移文件
+	migrator.DB.Order("id DESC").Find(&migrations)
+
+	// 回滚所有迁移
+	if !migrator.rollbackMigrations(migrations) {
+		console.Success("[migrations] table is empty, nothing to reset.")
+	}
+}
+
+func (migrator *Migrator) Refresh() {
+	migrator.Reset()
+	migrator.Up()
+}

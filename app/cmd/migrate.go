@@ -24,10 +24,25 @@ var CMDMigrateDown = &cobra.Command{
 	Run:   runDown,
 }
 
+var CMDMigrateReset = &cobra.Command{
+	Use:   "reset",
+	Short: "rollbacl all database migrations",
+	Run:   runReset,
+}
+
+var CMDMigrateRefresh = &cobra.Command{
+	Use:   "refresh",
+	Short: "reset and re-run all migrations",
+	Run:   runRefresh,
+}
+
 func init() {
 	CMDMigrate.AddCommand(
 		CMDMigrateUp,
 		CMDMigrateDown,
+		CMDMigrateReset,
+		CMDMigrateReset,
+		CMDMigrateRefresh,
 	)
 }
 
@@ -44,4 +59,12 @@ func runUp(cmd *cobra.Command, args []string) {
 
 func runDown(cmd *cobra.Command, args []string) {
 	migrator().Rollback()
+}
+
+func runReset(cmd *cobra.Command, args []string) {
+	migrator().Reset()
+}
+
+func runRefresh(cmd *cobra.Command, args []string) {
+	migrator().Refresh()
 }
