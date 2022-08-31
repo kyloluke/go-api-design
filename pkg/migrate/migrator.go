@@ -82,6 +82,9 @@ func (migrator *Migrator) runUpMigration(mfile MigrationFile, batch int) {
 		// 提示已迁移了哪个文件
 		console.Success("migrated " + mfile.FileName)
 	}
+
+	err := migrator.DB.Create(&Migration{Migration: mfile.FileName, Batch: batch}).Error
+	console.ExitIf(err)
 }
 
 // getBatch 获取当前这个批次的值, 从 migrations 表中获取最后那条记录的 batch 字段的值
