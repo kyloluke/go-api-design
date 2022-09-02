@@ -1,6 +1,7 @@
 package routes
 
 import (
+	v1controllers "gohub/app/http/controllers/v1"
 	"gohub/app/http/controllers/v1/auth"
 	"gohub/app/http/middlewares"
 
@@ -41,6 +42,10 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			prc := new(auth.PasswordResetController)
 			authGroup.POST("/password-reset/using-email", middlewares.GuestJWT(), prc.ResetByEmail)
 		}
+		uc := new(v1controllers.UsersController)
+
+		// 获取当前用户
+		v1.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
 
 	}
 
