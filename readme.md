@@ -1,9 +1,9 @@
 ## 用的第三方包
-- github.com/iancoleman/strcase  是用来处理大小写
-- github.com/gertd/go-pluralize  用来处理英文单复数
-- embed
+### github.com/iancoleman/strcase  是用来处理大小写
+### github.com/gertd/go-pluralize  用来处理英文单复数
+### embed
   - `embed.FS.ReadFile("stubs/" + stubName + ".stub")` 读文件, 
-- os
+### os
   - 读取文件内容时，结果为[]byte，需要 string()去转成string
   - 写入文件内容时，格式为[]byte，需要[]byte(string_data) 转换
   - `os.WriteFile(to, []byte, 0644)` 将内容写进文件
@@ -16,7 +16,8 @@
   - `os.Stat()`
   - `os.Exit(1)`
   - `os.MkdirAll(dir, os.ModePerm)` 会确保父目录和子目录都会创建，第二个参数是目录权限，使用 0777 如果目录存在，则不做处理
-
+### gorm.io/gorm
+  - *gorm.DB.Table("users").Create(&users) 批量创建users，不会调用模型钩子
 ## string()
   - string和数字之间转换可使用标准库strconv
   - 想要转换byte数组（[]byte或 []rune）为string字符串类型，这种情况下可以用string()
