@@ -2,7 +2,7 @@
 ### github.com/iancoleman/strcase  是用来处理大小写
 ### github.com/gertd/go-pluralize  用来处理英文单复数
 ### embed
-  - `embed.FS.ReadFile("stubs/" + stubName + ".stub")` 读文件, 
+  - `embed.FS.ReadFile("stubs/" + stubName + ".stub")` 读文件, 当前代码文件的相对路径
 ### os
   - 读取文件内容时，结果为[]byte，需要 string()去转成string
   - 写入文件内容时，格式为[]byte，需要[]byte(string_data) 转换
@@ -13,7 +13,7 @@
   - `os.Args[1:]`
   - `os.SyscallError`
   - `os.IsNotExist(err)`
-  - `os.Stat()`
+  - `os.Stat()`  基于项目的绝对路径，路径必须以项目根目录开始
   - `os.Exit(1)`
   - `os.MkdirAll(dir, os.ModePerm)` 会确保父目录和子目录都会创建，第二个参数是目录权限，使用 0777 如果目录存在，则不做处理
 ### gorm.io/gorm
