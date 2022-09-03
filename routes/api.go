@@ -43,9 +43,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/password-reset/using-email", middlewares.GuestJWT(), prc.ResetByEmail)
 		}
 		uc := new(v1controllers.UsersController)
-
 		// 获取当前用户
 		v1.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
+		usersGroup := v1.Group("/users")
+		{
+			usersGroup.GET("", uc.Index)
+		}
 
 	}
 
