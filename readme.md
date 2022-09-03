@@ -73,3 +73,10 @@
   - 此文件对象是最终的操作对象
   - 负责创建migration数据表
   - 拥有 up down reset fresh等动作
+
+
+## seed
+- 当命令 seed 被调用后
+  1. database/seeders 下面的所有的文件的 init方法被调用
+  2. 
+    
