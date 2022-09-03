@@ -72,6 +72,7 @@ func init() {
 		CmdMakeRequest,
 		CmdMakeMigration,
 		CMDMakeFactory,
+		CMDMakeSeeder,
 	)
 }
 
