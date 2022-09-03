@@ -1,6 +1,7 @@
 ## 用的第三方包
 ### github.com/iancoleman/strcase  是用来处理大小写
 ### github.com/gertd/go-pluralize  用来处理英文单复数
+### gorm.io/gorm/clause 是干啥的
 ### embed
   - `embed.FS.ReadFile("stubs/" + stubName + ".stub")` 读文件, 当前代码文件的相对路径
 ### os
@@ -18,9 +19,13 @@
   - `os.MkdirAll(dir, os.ModePerm)` 会确保父目录和子目录都会创建，第二个参数是目录权限，使用 0777 如果目录存在，则不做处理
 ### gorm.io/gorm
   - *gorm.DB.Table("users").Create(&users) 批量创建users，不会调用模型钩子
-## string()
+
+## 关于类型转换
+### string()
   - string和数字之间转换可使用标准库strconv
   - 想要转换byte数组（[]byte或 []rune）为string字符串类型，这种情况下可以用string()
+  - float64() 可以接收int的参数
+  - int() 可以接收float64的参数
 
 ## 关于时间
 - 获取当前时间
@@ -75,8 +80,5 @@
   - 拥有 up down reset fresh等动作
 
 
-## seed
-- 当命令 seed 被调用后
-  1. database/seeders 下面的所有的文件的 init方法被调用
-  2. 
+
     

@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// Paging 分页数据
+// Paging 分页数据  返回给前端的数据
 type Paging struct {
 	CurrentPage int    // 当前页
 	PerPage     int    // 每页条数
@@ -191,7 +191,7 @@ func (p Paginator) getNextPageURL() string {
 	return ""
 }
 
-// getPrevPageURL 返回下一页的链接
+// getPrevPageURL 返回上一页的链接
 func (p Paginator) getPrevPageURL() string {
 	if p.Page <= 1 || p.Page > p.TotalPage {
 		return ""

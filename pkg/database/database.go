@@ -85,6 +85,7 @@ func deleteMySQLTables() error {
 	return nil
 }
 
+// todo 暂无使用
 func deleteAllSqliteTables() error {
 	tables := []string{}
 
@@ -102,4 +103,10 @@ func deleteAllSqliteTables() error {
 		}
 	}
 	return nil
+}
+
+func TableName(obj interface{}) string {
+	stmt := &gorm.Statement{DB: DB}
+	stmt.Parse(obj)
+	return stmt.Schema.Table
 }
