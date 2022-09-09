@@ -26,6 +26,7 @@ func Validate(c *gin.Context, data interface{}, handler ValidatorFunc) bool {
 	}
 
 	// 调用表单验证
+	fmt.Printf("values: %#v\n", data)
 	errs := handler(data)
 
 	if len(errs) > 0 {

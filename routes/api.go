@@ -17,7 +17,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 	// 全局限流中间件：每小时限流。这里是所有 API （根据 IP）请求加起来。
 	// 作为参考 Github API 每小时最多 60 个请求（根据 IP）。
 	// 测试时，可以调高一点。
-	v1.Use(middlewares.LimitIP("40-H"))
+	v1.Use(middlewares.LimitIP("100-H"))
 	{
 		authGroup := v1.Group("/auth")
 		authGroup.Use(middlewares.LimitIP("50-H")) // todo 为什么内层比外层的还多？？为什么这样设计呢
@@ -50,6 +50,11 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			usersGroup.GET("", uc.Index)
 		}
 
+		// 分类
+		categoryController := new(v1controllers.CategoriesController)
+		categoryGroup := v1.Group("/category")
+		{
+			categoryGroup.POST("", categoryController.Store)
+		}
 	}
-
 }
