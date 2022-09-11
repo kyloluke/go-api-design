@@ -45,6 +45,8 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		uc := new(v1controllers.UsersController)
 		// 获取当前用户
 		v1.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
+
+		// 用户
 		usersGroup := v1.Group("/users")
 		{
 			usersGroup.GET("", uc.Index)
@@ -55,6 +57,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		categoryGroup := v1.Group("/category")
 		{
 			categoryGroup.POST("", categoryController.Store)
+			categoryGroup.PUT("/:id", categoryController.Update)
 		}
 	}
 }
