@@ -21,7 +21,7 @@ func (ctrl *UsersController) CurrentUser(c *gin.Context) {
 func (ctrl *UsersController) Index(c *gin.Context) {
 
 	request := requests.PaginationRequest{}
-	if ok := requests.Validate(c, &request, requests.PaginationSave); !ok {
+	if ok := requests.Validate(c, &request, requests.Pagination); !ok {
 		return
 	}
 

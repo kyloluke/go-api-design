@@ -53,7 +53,7 @@ func RunAll() {
 
 		if len(sdr.Name) > 0 {
 			console.Warning("Running Ordered Seeder: " + sdr.Name)
-			sdr.Func(database.DB) // 注意这里不能是 *gorm.DB 因为
+			sdr.Func(database.DB)
 			excuted[name] = name
 		}
 	}

@@ -56,8 +56,10 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		categoryController := new(v1controllers.CategoriesController)
 		categoryGroup := v1.Group("/category")
 		{
+			categoryGroup.GET("", categoryController.Index)
 			categoryGroup.POST("", categoryController.Store)
 			categoryGroup.PUT("/:id", categoryController.Update)
+			categoryGroup.DELETE("/:id", categoryController.Delete)
 		}
 	}
 }

@@ -10,7 +10,7 @@ type PaginationRequest struct {
 	PerPage string `valid:"per_page" form:"per_page"`
 }
 
-func PaginationSave(data interface{}) map[string][]string {
+func Pagination(data interface{}) map[string][]string {
 
 	rules := govalidator.MapData{
 		"order":    []string{"in:asc,desc"},
