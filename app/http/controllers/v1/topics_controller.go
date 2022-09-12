@@ -2,7 +2,9 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"gohub/app/models/topic"
 	"gohub/app/requests"
+	"gohub/pkg/auth"
 	"net/http"
 )
 
@@ -17,8 +19,26 @@ func (ctrl *TopicsController) Store(c *gin.Context) {
 		return
 	}
 
-	// 数据保存
-	c.AbortWithStatusJSON(http.StatusOK, gin.H{
-		"message": "下一步创建model实现 话题创建",
+	// 保存数据
+	topicModel := topic.Topic{
+		Title:      request.Title,
+		Body:       request.Body,
+		CategoryID: request.CategoryID,
+		UserID:     auth.CurrentUID(c),
+	}
+
+	topicModel.Create()
+
+	if topicModel.ID > 0 {
+		c.JSON(http.StatusCreated, gin.H{
+			"success": true,
+			"data":    topicModel,
+		})
+		return
+	}
+
+	c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+		"message": "话题更新失败，请稍后再试",
 	})
+
 }

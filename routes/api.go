@@ -66,7 +66,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		topicController := new(v1controllers.TopicsController)
 		topicGroup := v1.Group("/topic")
 		{
-			topicGroup.POST("", topicController.Store)
+			topicGroup.POST("", middlewares.AuthJWT(), topicController.Store)
 		}
 
 	}
