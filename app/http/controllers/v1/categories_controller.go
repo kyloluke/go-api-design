@@ -31,10 +31,6 @@ func (ctrl *CategoriesController) Index(c *gin.Context) {
 	})
 }
 
-func (ctrl *CategoriesController) Show(c *gin.Context) {
-
-}
-
 func (ctrl *CategoriesController) Store(c *gin.Context) {
 	request := requests.CategoryRequest{}
 

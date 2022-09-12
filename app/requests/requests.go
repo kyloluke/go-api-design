@@ -15,7 +15,7 @@ type ValidatorFunc func(interface{}) map[string][]string
 func Validate(c *gin.Context, data interface{}, handler ValidatorFunc) bool {
 	// 解析json，将数据绑定到 结构体字段中
 	// todo ShouldBind 并不能通用于 url的 query 形式 和 json 形式
-	if err := c.ShouldBind(data); err != nil {
+	if err := c.ShouldBindJSON(data); err != nil {
 		//c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
 		//	"message": "请求解析错误，请确认请求格式是否正确。上传文件请使用 multipart 标头，参数请使用 JSON 格式。",
 		//	"error":   err.Error(),
@@ -52,4 +52,5 @@ func validate(data interface{}, rules govalidator.MapData, messages govalidator.
 	}
 
 	return govalidator.New(opts).ValidateStruct()
+
 }

@@ -61,5 +61,13 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			categoryGroup.PUT("/:id", categoryController.Update)
 			categoryGroup.DELETE("/:id", categoryController.Delete)
 		}
+
+		// 话题 帖子
+		topicController := new(v1controllers.TopicsController)
+		topicGroup := v1.Group("/topic")
+		{
+			topicGroup.POST("", topicController.Store)
+		}
+
 	}
 }
