@@ -83,5 +83,34 @@ func (ctrl *TopicsController) Update(c *gin.Context) {
 		"success": true,
 		"data":    topicModel,
 	})
+}
 
+func (ctrl *TopicsController) Delete(c *gin.Context) {
+	topicModel := topic.Get(c.Param("id"))
+
+	if topicModel.ID == 0 {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"message": "帖子没找到，请重新操作",
+		})
+		return
+	}
+
+	if ok := policies.CanModifyTopic(c, topicModel); !ok {
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+			"message": "无权限操作",
+		})
+		return
+	}
+
+	rowsAffected := topicModel.Delete()
+	if rowsAffected == 0 {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "内部错误，请稍后再试",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+	})
 }
