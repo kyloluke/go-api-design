@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"gohub/app/models/topic"
+	"gohub/app/policies"
 	"gohub/app/requests"
 	"gohub/pkg/auth"
 	"net/http"
@@ -52,6 +53,14 @@ func (ctrl *TopicsController) Update(c *gin.Context) {
 		})
 	}
 
+	// 2 編集権限のチェック
+	if ok := policies.CanModifyTopic(c, topicModel); !ok {
+		//response.Abort403()
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+			"message": "无权操作",
+		})
+		return
+	}
 	// 2 バリデーション
 	request := requests.TopicRequest{}
 	if ok := requests.Validate(c, &request, requests.TopicSave); !ok {

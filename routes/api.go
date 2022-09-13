@@ -53,13 +53,13 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		}
 
 		// 分类
-		categoryController := new(v1controllers.CategoriesController)
+		ctc := new(v1controllers.CategoriesController)
 		categoryGroup := v1.Group("/category")
 		{
-			categoryGroup.GET("", categoryController.Index)
-			categoryGroup.POST("", categoryController.Store)
-			categoryGroup.PUT("/:id", categoryController.Update)
-			categoryGroup.DELETE("/:id", categoryController.Delete)
+			categoryGroup.GET("", middlewares.AuthJWT(), ctc.Index)
+			categoryGroup.POST("", middlewares.AuthJWT(), ctc.Store)
+			categoryGroup.PUT("/:id", middlewares.AuthJWT(), ctc.Update)
+			categoryGroup.DELETE("/:id", middlewares.AuthJWT(), ctc.Delete)
 		}
 
 		// 话题 帖子
