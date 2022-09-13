@@ -63,11 +63,11 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		}
 
 		// 话题 帖子
-		topicController := new(v1controllers.TopicsController)
+		tpc := new(v1controllers.TopicsController)
 		topicGroup := v1.Group("/topic")
 		{
-			topicGroup.POST("", middlewares.AuthJWT(), topicController.Store)
+			topicGroup.POST("", middlewares.AuthJWT(), tpc.Store)
+			topicGroup.PUT("/:id", middlewares.AuthJWT(), tpc.Update)
 		}
-
 	}
 }
