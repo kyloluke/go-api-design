@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/thedevsaddam/govalidator"
 	"gohub/app/models/topic"
 	"gohub/app/policies"
 	"gohub/app/requests"
@@ -11,6 +12,62 @@ import (
 
 type TopicsController struct {
 	BaseAPIController
+}
+
+func (ctrl *TopicsController) Index(c *gin.Context) {
+
+	// 分页参数绑定
+	type paginateRequest struct {
+		Sort    string `valid:"sort" form:"sort"`
+		Order   string `valid:"order" form:"order"`
+		PerPage string `valid:"per_page" form:"per_page"`
+	}
+	var request paginateRequest
+	if err := c.ShouldBind(&request); err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "数据解析错误",
+		})
+		return
+	}
+
+	// 分页参数数据验证
+	rules := govalidator.MapData{
+		"sort":     []string{"in:id,created_at,updated_at"},
+		"order":    []string{"in:asc,desc"},
+		"per_page": []string{"numeric_between:2,100"},
+	}
+	messages := govalidator.MapData{
+		"sort":     []string{"in:排序字段必须是 id，created_at,updated_at 其中一个"},
+		"order":    []string{"in:排序规则必须是 asc，desc 其中一个"},
+		"per_page": []string{"numeric_between:每页数量必须2-100之间"},
+	}
+
+	opts := govalidator.Options{
+		Data:          &request,
+		Rules:         rules,
+		Messages:      messages,
+		TagIdentifier: "valid",
+	}
+
+	errors := govalidator.New(opts).ValidateStruct()
+
+	if len(errors) > 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"errors": errors,
+		})
+		return
+	}
+
+	// 获取分页数据
+	topics, pager := topic.Paginate(c, 10)
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"data":  topics,
+			"pager": pager,
+		},
+	})
 }
 
 func (ctrl *TopicsController) Store(c *gin.Context) {

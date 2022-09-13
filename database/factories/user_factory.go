@@ -14,7 +14,7 @@ func MakeUsers(times int) []user.User {
 
 	for i := 0; i < times; i++ {
 		userModel := user.User{
-			Name:     faker.Username(),
+			Name:     faker.ChineseName(),
 			Email:    faker.Email(),
 			Phone:    helpers.RandomNumber(11),
 			Password: "$2a$14$oPzVkIdwJ8KqY0erYAYQxOuAAlbI/sFIsH0C0R4MPc.3JbWWSuaUe",
