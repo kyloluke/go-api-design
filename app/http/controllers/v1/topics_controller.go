@@ -14,6 +14,21 @@ type TopicsController struct {
 	BaseAPIController
 }
 
+func (ctrl *TopicsController) Show(c *gin.Context) {
+	topicModel := topic.Get(c.Param("id"))
+	if topicModel.ID == 0 {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"message": "該当データは見つかりませんでした",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    topicModel,
+	})
+}
+
 func (ctrl *TopicsController) Index(c *gin.Context) {
 
 	// 分页参数绑定
