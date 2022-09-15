@@ -11,7 +11,7 @@ type LinksController struct {
 }
 
 func (ctrl *LinksController) Index(c *gin.Context) {
-	links := link.All()
+	links := link.AllCached()
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
