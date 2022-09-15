@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"gohub/app/requests/validators"
 )
@@ -20,7 +21,7 @@ type SignupUsingEmailRequest struct {
 	PasswordConfirm string `json:"password_confirm,omitempty" valid:"password_confirm"`
 }
 
-func SignupUsingEmail(data interface{}) map[string][]string {
+func SignupUsingEmail(data interface{}, c *gin.Context) map[string][]string {
 	rules := govalidator.MapData{
 		"email":            []string{"required", "min:4", "max:30", "email", "not_exists:users,email"},
 		"name":             []string{"required", "alpha_num", "between:3,20", "not_exists:users,name"},
@@ -67,7 +68,7 @@ func SignupUsingEmail(data interface{}) map[string][]string {
 }
 
 // ValidatePhoneIsExist 验证手机输入是否正确
-func ValidatePhoneIsExist(data interface{}) map[string][]string {
+func ValidatePhoneIsExist(data interface{}, c *gin.Context) map[string][]string {
 	// 自定义验证规则
 	rules := govalidator.MapData{
 		"phone": []string{"required", "digits:11"},
@@ -85,7 +86,7 @@ func ValidatePhoneIsExist(data interface{}) map[string][]string {
 }
 
 // ValidateIsEmailExist 验证邮箱输入是否正确
-func ValidateIsEmailExist(data interface{}) map[string][]string {
+func ValidateIsEmailExist(data interface{}, c *gin.Context) map[string][]string {
 	rules := govalidator.MapData{
 		"email": []string{"required", "min:4", "max:30", "email"},
 	}

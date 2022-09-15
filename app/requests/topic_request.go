@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 )
 
@@ -10,7 +11,7 @@ type TopicRequest struct {
 	CategoryID string `valid:"category_id" json:"category_id,omitempty"`
 }
 
-func TopicSave(data interface{}) map[string][]string {
+func TopicSave(data interface{}, c *gin.Context) map[string][]string {
 	rules := govalidator.MapData{
 		"title":       []string{"required", "min_cn:2", "max_cn:40"},
 		"body":        []string{"required", "min_cn:2", "max_cn:5000"},

@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"gohub/app/requests/validators"
 )
@@ -14,7 +15,7 @@ type LoginByPasswordRequest struct {
 }
 
 // LoginByPassword 验证表单，返回长度等于零即通过
-func LoginByPassword(data interface{}) map[string][]string {
+func LoginByPassword(data interface{}, c *gin.Context) map[string][]string {
 
 	rules := govalidator.MapData{
 		"login_id":       []string{"required", "min:3"},

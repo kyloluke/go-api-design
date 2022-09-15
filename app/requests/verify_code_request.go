@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"gohub/app/requests/validators"
 )
@@ -13,7 +14,7 @@ type VerifyCodeEmailRequest struct {
 }
 
 // VerifyCodeEmail 验证表单，返回长度等于零即通过
-func VerifyCodeEmail(data interface{}) map[string][]string {
+func VerifyCodeEmail(data interface{}, c *gin.Context) map[string][]string {
 
 	// 1. 定制认证规则
 	rules := govalidator.MapData{

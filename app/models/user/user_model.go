@@ -10,7 +10,12 @@ type User struct {
 	models.BaseModel
 
 	// 敏感信息不想输出给用户，"-" 这是在指示 JSON 解析器忽略字段 。后面接口返回用户数据时候，这三个字段都会被隐藏
-	Name     string `json:"name,omitempty"`
+	Name string `json:"name,omitempty"`
+
+	City         string `json:"city,omitempty"`
+	Introduction string `json:"introduction,omitempty"`
+	Avatar       string `json:"avatar,omitempty"`
+
 	Email    string `json:"-"`
 	Phone    string `json:"-"`
 	Password string `json:"-"`
@@ -44,7 +49,6 @@ func GetByEmail(email string) (userModel User) {
 }
 
 func All() (users []User) {
-	users = []User{}
 	database.DB.Find(&users)
 	return
 }

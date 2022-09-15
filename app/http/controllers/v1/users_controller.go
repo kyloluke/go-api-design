@@ -33,3 +33,27 @@ func (ctrl *UsersController) Index(c *gin.Context) {
 		"data":    gin.H{"data": data, "pager": pager},
 	})
 }
+
+func (ctrl *UsersController) Update(c *gin.Context) {
+	request := requests.UserRequest{}
+	if ok := requests.Validate(c, &request, requests.UserSave); !ok {
+		return
+	}
+
+	userModel := auth.CurrentUser(c)
+	userModel.Name = request.Name
+	userModel.City = request.City
+	userModel.Introduction = request.Introduction
+
+	rowsAffected := userModel.Save()
+	if rowsAffected == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "内部错误",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    userModel,
+	})
+}

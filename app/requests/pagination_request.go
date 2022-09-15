@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 )
 
@@ -10,7 +11,7 @@ type PaginationRequest struct {
 	PerPage string `valid:"per_page" form:"per_page"`
 }
 
-func Pagination(data interface{}) map[string][]string {
+func Pagination(data interface{}, c *gin.Context) map[string][]string {
 
 	rules := govalidator.MapData{
 		"order":    []string{"in:asc,desc"},

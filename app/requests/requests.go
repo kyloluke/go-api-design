@@ -10,7 +10,7 @@ import (
 // ValidatorFunc 用于控制器的回调函数用
 // ValidatePhoneIsExist() ValidateEmailIsExist() 等函数名称
 
-type ValidatorFunc func(interface{}) map[string][]string
+type ValidatorFunc func(interface{}, *gin.Context) map[string][]string
 
 func Validate(c *gin.Context, data interface{}, handler ValidatorFunc) bool {
 	// 解析json，将数据绑定到 结构体字段中
@@ -27,7 +27,7 @@ func Validate(c *gin.Context, data interface{}, handler ValidatorFunc) bool {
 	}
 
 	// 调用表单验证
-	errs := handler(data)
+	errs := handler(data, c)
 
 	if len(errs) > 0 {
 		//c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
