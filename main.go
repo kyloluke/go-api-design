@@ -52,6 +52,7 @@ func main() {
 		make.CmdMake,
 		cmd.CMDMigrate,
 		cmd.CmdDBSeed,
+		cmd.CmdCache,
 	)
 	// 配置默认运行 Web 服务  默认运行  server.go 注册的命令
 	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
