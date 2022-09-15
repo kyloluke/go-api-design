@@ -1,5 +1,5 @@
 ## 用的第三方包
-### github.com/iancoleman/strcase  是用来处理大小写
+### github.com/iancoleman/strcase  用来处理大小写
 ### github.com/gertd/go-pluralize  用来处理英文单复数
 ### gorm.io/gorm/clause 是干啥的
 ### embed

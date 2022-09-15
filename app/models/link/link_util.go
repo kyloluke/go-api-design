@@ -1,7 +1,6 @@
 package link
 
 import (
-	"fmt"
 	"gohub/pkg/app"
 	"gohub/pkg/cache"
 	"gohub/pkg/database"
@@ -51,7 +50,6 @@ func AllCached() (links []Link) {
 	expireTime := 120 * time.Minute
 
 	cache.GetObject(cacheKey, &links)
-	fmt.Printf("缓存获取到的连接长度为：%#v", len(links))
 
 	if helpers.Empty(links) {
 		links = All()
