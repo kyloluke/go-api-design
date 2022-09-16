@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"gohub/pkg/auth"
+	"gohub/pkg/verifycode"
 )
 
 type UserRequest struct {
@@ -36,4 +37,47 @@ func UserSave(data interface{}, c *gin.Context) map[string][]string {
 		},
 	}
 	return validate(data, rules, messages)
+}
+
+type UserUpdateEmailRequest struct {
+	Email      string `valid:"email" json:"email,omitempty"`
+	VerifyCode string `valid:"verify_code" json:"verify_code,omitempty"`
+}
+
+func UserUpdateEmailValidate(data interface{}, c *gin.Context) map[string][]string {
+	// 违反的验证规则项都会同时抛出
+	currentUser := auth.CurrentUser(c)
+	rules := govalidator.MapData{
+		"email": []string{
+			"required",
+			"max:30",
+			"email",
+			"not_exists:users,email," + currentUser.GetStringID(),
+			"not_in:" + currentUser.Email},
+		"verify_code": []string{"required", "digits:6"},
+	}
+
+	messages := govalidator.MapData{
+		"email": []string{
+			"required:邮箱为必填项目",
+			"max:长度需小于30",
+			"email:请输入邮箱格式",
+			"not_exists:邮箱已被占用",
+			"not_in:新邮箱不能与老邮箱一致",
+		},
+		"verify_code": []string{
+			"required:验证码必填项",
+			"digits:请输入6位数字",
+		},
+	}
+
+	errs := validate(data, rules, messages)
+
+	_data := data.(*UserUpdateEmailRequest)
+
+	if ok := verifycode.NewVerifyCode().CheckAnswer(_data.Email, _data.VerifyCode); !ok {
+		errs["verify_code"] = append(errs["verify_code"], "验证码错误")
+	}
+
+	return errs
 }

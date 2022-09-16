@@ -1,10 +1,12 @@
 package v1
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"gohub/app/models/user"
 	"gohub/app/requests"
 	"gohub/pkg/auth"
+	"gohub/pkg/logger"
 	"gohub/pkg/response"
 	"net/http"
 )
@@ -55,5 +57,36 @@ func (ctrl *UsersController) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    userModel,
+	})
+}
+
+func (*UsersController) UpdateEmail(c *gin.Context) {
+	request := requests.UserUpdateEmailRequest{}
+
+	if ok := requests.Validate(c, &request, requests.UserUpdateEmailValidate); !ok {
+		return
+	}
+
+	currentUser, ok := c.MustGet("current_user").(user.User)
+	if !ok {
+		logger.LogIf(errors.New("无法获取用户"))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "未知错误，请稍后再试",
+		})
+		return
+	}
+
+	currentUser.Email = request.Email
+	rowsAffected := currentUser.Save()
+
+	if rowsAffected == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "更新失败，请稍后再试",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
 	})
 }
