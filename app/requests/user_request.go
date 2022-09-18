@@ -5,6 +5,7 @@ import (
 	"github.com/thedevsaddam/govalidator"
 	"gohub/pkg/auth"
 	"gohub/pkg/verifycode"
+	"net/http"
 )
 
 type UserRequest struct {
@@ -80,4 +81,60 @@ func UserUpdateEmailValidate(data interface{}, c *gin.Context) map[string][]stri
 	}
 
 	return errs
+}
+
+type UpdatePasswordRequest struct {
+	CurrentPassword    string `valid:"current_password" json:"current_password,omitempty"`
+	NewPassword        string `valid:"new_password" json:"new_password,omitempty"`
+	NewPasswordConfirm string `valid:"new_password_confirm" json:"new_password_confirm,omitempty"`
+}
+
+// UpdatePasswordValidate 密码修改
+func UpdatePasswordValidate(data interface{}, c *gin.Context) bool {
+
+	// 数据绑定
+	if err := c.ShouldBindJSON(data); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "数据解析错误",
+			"err":     err.Error(),
+		})
+		return false
+	}
+
+	// 数据验证
+	rules := govalidator.MapData{
+		"current_password":     []string{"required", "min:6"},
+		"new_password":         []string{"required", "min:6"},
+		"new_password_confirm": []string{"required", "min:6"},
+	}
+
+	messages := govalidator.MapData{
+		"current_password":     []string{"required:密码是必填项", "min:最少6位"},
+		"new_password":         []string{"required:新密码是必填项", "min:最少6位"},
+		"new_password_confirm": []string{"required:确认新密码为必填项", "min:最少6位"},
+	}
+
+	opts := govalidator.Options{
+		Data:          data,
+		Rules:         rules,
+		Messages:      messages,
+		TagIdentifier: "valid",
+	}
+
+	errs := govalidator.New(opts).ValidateStruct()
+
+	// 新密码的两次输入是否一致
+	_data := data.(*UpdatePasswordRequest)
+	if _data.NewPassword != _data.NewPasswordConfirm {
+		errs["new_password_confirm"] = append(errs["new_password_confirm"], "新密码不一致")
+	}
+
+	if len(errs) > 0 {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "数据验证通过",
+			"errors":  errs,
+		})
+		return false
+	}
+	return true
 }

@@ -90,3 +90,43 @@ func (*UsersController) UpdateEmail(c *gin.Context) {
 		"success": true,
 	})
 }
+
+// UpdatePassword 修改密码
+func (ctrl *UsersController) UpdatePassword(c *gin.Context) {
+	request := requests.UpdatePasswordRequest{}
+
+	if !requests.UpdatePasswordValidate(&request, c) {
+		return
+	}
+
+	// 验证原密码是否正确
+	currentUser, ok := c.MustGet("current_user").(user.User)
+	if !ok {
+		logger.LogIf(errors.New("未找到登录用户"))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "未知错误",
+		})
+		return
+	}
+
+	if !currentUser.ComparePassword(request.CurrentPassword) {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "原密码错误",
+		})
+		return
+	}
+
+	// 修改密码
+	currentUser.Password = request.NewPassword
+	rowsAffected := currentUser.Save()
+	if rowsAffected == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "内部错误，请稍后再试",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+	})
+}
