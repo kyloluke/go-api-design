@@ -3,11 +3,15 @@ package v1
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/thedevsaddam/govalidator"
 	"gohub/app/models/user"
 	"gohub/app/requests"
 	"gohub/pkg/auth"
+	"gohub/pkg/config"
+	"gohub/pkg/file"
 	"gohub/pkg/logger"
 	"gohub/pkg/response"
+	"mime/multipart"
 	"net/http"
 )
 
@@ -128,5 +132,68 @@ func (ctrl *UsersController) UpdatePassword(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
+	})
+}
+
+func (ctrl *UsersController) UpdateAvatar(c *gin.Context) {
+	type updateAvatarRequest struct {
+		Avatar *multipart.FileHeader `valid:"avatar" form:"avatar"`
+	}
+	var request = updateAvatarRequest{}
+
+	// 数据绑定
+	if err := c.ShouldBind(&request); err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "请求解析错误，请确认数据格式是否正确",
+		})
+		return
+	}
+
+	// 数据验证
+	rules := govalidator.MapData{
+		"file:avatar": []string{"required", "ext:png,jpg,jpeg", "size:20971520"},
+	}
+
+	messages := govalidator.MapData{
+		"file:avatar": []string{
+			"required:请上传文件",
+			"ext:文件格式只支持 png,jpg,jpeg",
+			"size:文件大小不超过20MB",
+		},
+	}
+
+	opts := govalidator.Options{
+		Request:       c.Request,
+		Rules:         rules,
+		Messages:      messages,
+		TagIdentifier: "valid",
+	}
+	errs := govalidator.New(opts).Validate()
+
+	if len(errs) > 0 {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "数据验证失败",
+			"errors":  errs,
+		})
+		return
+	}
+
+	// 保存文件
+	//fmt.Printf("valud: %#v\n", request.Avatar)
+	avatar, err := file.SaveUploadAvatar(c, request.Avatar)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "头像上传失败",
+		})
+		return
+	}
+	currentUser := auth.CurrentUser(c)
+	currentUser.Avatar = config.GetString("app.url") + avatar
+	currentUser.Save()
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    currentUser,
 	})
 }
