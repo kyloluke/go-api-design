@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/bxcodec/faker/v3 v3.8.0
+	github.com/disintegration/imaging v1.6.2
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.5
@@ -36,7 +37,7 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/image v0.0.0-20190802002840-cff245a6509b // indirect
+	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 )
 
 require (

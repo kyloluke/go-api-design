@@ -1,7 +1,8 @@
 ## 用的第三方包
 ### github.com/iancoleman/strcase  用来处理大小写
 ### github.com/gertd/go-pluralize  用来处理英文单复数
-### gorm.io/gorm/clause 是干啥的
+### github.com/disintegration/imaging 图片裁剪
+### gorm.io/gorm/clause
 ### embed
   - `embed.FS.ReadFile("stubs/" + stubName + ".stub")` 读文件, 当前代码文件的相对路径
 ### os
@@ -13,8 +14,16 @@
   - `os.Stdout`
   - `os.Args[1:]`
   - `os.SyscallError`
-  - `os.IsNotExist(err)`
-  - `os.Stat()`  基于项目的绝对路径，路径必须以项目根目录开始
+  - `os.Stat()`  判断文件是否存在
+    ```go
+      // filePath基于mian.go文件的相对路径
+      _, err := os.Stat(filePath) // 文件不存在时 err = &fs.PathError{Op:"CreateFile", Path:"app/cmd/test_command.go", Err:0x2}
+      if os.IsNotExist(err) {     // 文件不存在时， true
+        // 文件不存在
+      } else {
+        // 文件存在  
+	  }
+    ```
   - `os.Exit(1)`
   - `os.MkdirAll(dir, os.ModePerm)` 会确保父目录和子目录都会创建，第二个参数是目录权限，使用 0777 如果目录存在，则不做处理
 ### gorm.io/gorm
@@ -30,7 +39,7 @@
 ## 关于时间
 - 获取当前时间
 ```go
-  currentTime := time.Now()      //获取当前时间，类型是Go的时间类型Time 类型为：time.Time, 值为:time.Date(2022, time.August, 29, 0, 32, 45, 248462100, time.Local)
+  t0 := time.Now()      //获取当前时间，类型是Go的时间类型Time 类型为：time.Time, 值为:time.Date(2022, time.August, 29, 0, 32, 45, 248462100, time.Local)
   t1 := time.Now().Year()        //年
   t2 := time.Now().Month()       //月
   t3 := time.Now().Day()         //日
